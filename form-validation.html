@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #4e5de1;
+            box-shadow: 0 0 0 3px rgba(78, 93, 225, 0.15);
+        }
+        
+        .form-control.error {
+            border-color: #e74c3c;
+        }
+        
+        .form-control.success {
+            border-color: #2ecc71;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 6px;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .form-control.error + .error-message {
+            display: block;
+        }
+        
+        .form-control.error ~ .icon-error {
+            display: block;
+        }
+        
+        .form-control.success ~ .icon-success {
+            display: block;
+        }
+        
+        .icon {
+            position: absolute;
+            right: 12px;
+            top: 40px;
+            display: none;
+        }
+        
+        .icon-success {
+            color: #2ecc71;
+        }
+        
+        .icon-error {
+            color: #e74c3c;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px 20px;
+            background-color: #4e5de1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #3a48c4;
+        }
+        
+        button[type="submit"]:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #777;
+            margin-top: 6px;
+        }
+        
+        .password-strength {
+            display: flex;
+            margin-top: 8px;
+            height: 5px;
+            gap: 4px;
+        }
+        
+        .password-strength span {
+            flex: 1;
+            height: 100%;
+            background-color: #ddd;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        
+        /* Password strength indicators */
+        .weak .str-1 {
+            background-color: #e74c3c;
+        }
+        
+        .medium .str-1,
+        .medium .str-2 {
+            background-color: #f39c12;
+        }
+        
+        .strong .str-1,
+        .strong .str-2,
+        .strong .str-3 {
+            background-color: #2ecc71;
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="success-message" class="success-message">
+            Form submitted successfully!
+        </div>
+        
+        <h2>Sign Up</h2>
+        
+        <form id="signup-form" novalidate>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+                <div class="error-message">Please enter a valid name (at least 2 characters)</div>
+                <svg class="icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <svg class="icon icon-error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email">
+                <div class="error-message">Please enter a valid email address</div>
+                <svg class="icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <svg class="icon icon-error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                <div class="error-message">Please enter a valid phone number (10 digits)</div>
+                <div class="helper-text">Format: 1234567890</div>
+                <svg class="icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <svg class="icon icon-error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password">
+                <button type="button" id="toggle-password" class="password-toggle">
+                    <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg id="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </button>
+                <div class="error-message">Password must be at least 8 characters with a number and a special character</div>
+                <div class="password-strength">
+                    <span class="str-1"></span>
+                    <span class="str-2"></span>
+                    <span class="str-3"></span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" class="form-control" placeholder="Confirm your password">
+                <div class="error-message">Passwords do not match</div>
+                <svg class="icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <svg class="icon icon-error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            
+            <button type="submit" id="submit-button" disabled>Sign Up</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signup-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const togglePasswordBtn = document.getElementById('toggle-password');
+            const eyeIcon = document.getElementById('eye-icon');
+            const eyeOffIcon = document.getElementById('eye-off-icon');
+            const submitButton = document.getElementById('submit-button');
+            const successMessage = document.getElementById('success-message');
+            const passwordStrengthBar = document.querySelector('.password-strength');
+            
+            // Object to track field validity
+            const validFields = {
+                name: false,
+                email: false,
+                phone: false,
+                password: false,
+                confirmPassword: false
+            };
+            
+            // Validate name field
+            nameInput.addEventListener('input', function() {
+                const value = this.value.trim();
+                if (value.length >= 2) {
+                    setSuccess(this);
+                    validFields.name = true;
+                } else {
+                    setError(this);
+                    validFields.name = false;
+                }
+                updateSubmitButton();
+            });
+            
+            // Validate email field
+            emailInput.addEventListener('input', function() {
+                const value = this.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (emailRegex.test(value)) {
+                    setSuccess(this);
+                    validFields.email = true;
+                } else {
+                    setError(this);
+                    validFields.email = false;
+                }
+                updateSubmitButton();
+            });
+            
+            // Validate phone field
+            phoneInput.addEventListener('input', function() {
+                const value = this.value.replace(/\D/g, ''); // Remove non-digits
+                this.value = value; // Update input value to digits only
+                
+                if (value.length === 10) {
+                    setSuccess(this);
+                    validFields.phone = true;
+                } else {
+                    setError(this);
+                    validFields.phone = false;
+                }
+                updateSubmitButton();
+            });
+            
+            // Validate password field
+            passwordInput.addEventListener('input', function() {
+                const value = this.value.trim();
+                const hasNumber = /\d/.test(value);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+                const isLongEnough = value.length >= 8;
+                
+                // Check password strength
+                if (isLongEnough && hasNumber && hasSpecialChar) {
+                    setSuccess(this);
+                    validFields.password = true;
+                    passwordStrengthBar.className = 'password-strength strong';
+                } else if (isLongEnough && (hasNumber || hasSpecialChar)) {
+                    setError(this);
+                    validFields.password = false;
+                    passwordStrengthBar.className = 'password-strength medium';
+                } else if (value.length > 0) {
+                    setError(this);
+                    validFields.password = false;
+                    passwordStrengthBar.className = 'password-strength weak';
+                } else {
+                    setError(this);
+                    validFields.password = false;
+                    passwordStrengthBar.className = 'password-strength';
+                }
+                
+                // Re-validate confirm password if it has a value
+                if (confirmPasswordInput.value.trim().length > 0) {
+                    validateConfirmPassword();
+                }
+                
+                updateSubmitButton();
+            });
+            
+            // Validate confirm password field
+            confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+            
+            function validateConfirmPassword() {
+                const passwordValue = passwordInput.value.trim();
+                const confirmValue = confirmPasswordInput.value.trim();
+                
+                if (confirmValue === passwordValue && passwordValue.length > 0) {
+                    setSuccess(confirmPasswordInput);
+                    validFields.confirmPassword = true;
+                } else {
+                    setError(confirmPasswordInput);
+                    validFields.confirmPassword = false;
+                }
+                updateSubmitButton();
+            }
+            
+            // Toggle password visibility
+            togglePasswordBtn.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                confirmPasswordInput.setAttribute('type', type);
+                
+                // Toggle eye icons
+                if (type === 'text') {
+                    eyeIcon.style.display = 'none';
+                    eyeOffIcon.style.display = 'block';
+                } else {
+                    eyeIcon.style.display = 'block';
+                    eyeOffIcon.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Final validation before submission
+                if (isFormValid()) {
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    
+                    // Reset form after 3 seconds
+                    setTimeout(() => {
+                        form.reset();
+                        successMessage.style.display = 'none';
+                        resetFormStyles();
+                        Object.keys(validFields).forEach(key => {
+                            validFields[key] = false;
+                        });
+                        passwordStrengthBar.className = 'password-strength';
+                        updateSubmitButton();
+                    }, 3000);
+                }
+            });
+            
+            // Helper functions
+            function setSuccess(input) {
+                input.classList.remove('error');
+                input.classList.add('success');
+            }
+            
+            function setError(input) {
+                input.classList.remove('success');
+                input.classList.add('error');
+            }
+            
+            function resetFormStyles() {
+                const inputs = form.querySelectorAll('.form-control');
+                inputs.forEach(input => {
+                    input.classList.remove('success', 'error');
+                });
+            }
+            
+            function isFormValid() {
+                return Object.values(validFields).every(value => value === true);
+            }
+            
+            function updateSubmitButton() {
+                submitButton.disabled = !isFormValid();
+            }
+        });
+    </script>
+</body>
+</html>
